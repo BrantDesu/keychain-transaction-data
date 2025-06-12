@@ -30,6 +30,7 @@
         button {
             padding: 10px 20px;
             font-size: 16px;
+            margin-top: 10px;
         }
         .url-output {
             margin-top: 20px;
@@ -59,19 +60,27 @@
         return btoa(unescape(encodeURIComponent(str)));
     }
 
-    document.getElementById("miFormulario").addEventListener("submit", function(event) {
+    async function copiarAlPortapapeles(texto) {
+        try {
+            await navigator.clipboard.writeText(texto);
+            console.log("Copiado al portapapeles automáticamente");
+        } catch (err) {
+            console.error("Error al copiar: ", err);
+        }
+    }
+
+    document.getElementById("miFormulario").addEventListener("submit", async function(event) {
         event.preventDefault();
 
         const texto = document.getElementById("texto").value;
         const encoded = encodeBase64(texto);
 
-        // Calculamos la base del sitio
         const basePath = window.location.origin + window.location.pathname.replace(/\/generator\/.*$/, '/');
-
-        // Generamos la URL apuntando a /decode/
         const url = `${basePath}decoder/?data=${encoded}`;
 
         document.getElementById("resultado").textContent = url;
+
+        await copiarAlPortapapeles(url);
     });
 </script>
 
