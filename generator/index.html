@@ -64,7 +64,12 @@
 
         const texto = document.getElementById("texto").value;
         const encoded = encodeBase64(texto);
-        const url = `${window.location.origin}?data=${encoded}`;
+
+        // Calculamos la base del sitio
+        const basePath = window.location.origin + window.location.pathname.replace(/\/generator\/.*$/, '/');
+
+        // Generamos la URL apuntando a /decode/
+        const url = `${basePath}decoder/?data=${encoded}`;
 
         document.getElementById("resultado").textContent = url;
     });
