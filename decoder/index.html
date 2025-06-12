@@ -2,33 +2,43 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Decodificador de URL Base64</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            margin: 40px;
+            margin: 0;
+            padding: 20px;
             background-color: #f5f5f5;
         }
+
         .container {
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             max-width: 600px;
-            margin: auto;
+            margin: 20px auto;
         }
+
+        h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+
         .decoded-text {
             background: #e9e9e9;
-            padding: 10px;
+            padding: 15px;
             border-radius: 5px;
             white-space: pre-wrap;
             word-break: break-word;
-            margin-bottom: 15px;
+            font-size: 0.95em;
         }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-        }
+
         .error {
             color: red;
             margin-top: 20px;
@@ -41,8 +51,6 @@
     <h2>Decodificador de Texto</h2>
 
     <div id="resultado" class="decoded-text"></div>
-    <button id="copiarBtn">Copiar al portapapeles</button>
-
     <div id="error" class="error"></div>
 </div>
 
@@ -60,7 +68,16 @@
         return urlParams.get(name);
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
+    async function copiarAlPortapapeles(texto) {
+        try {
+            await navigator.clipboard.writeText(texto);
+            console.log("Texto decodificado copiado automáticamente");
+        } catch (err) {
+            console.error("Error al copiar: ", err);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
         const encoded = obtenerParametro("data");
         const resultado = document.getElementById("resultado");
         const errorDiv = document.getElementById("error");
@@ -73,14 +90,7 @@
         try {
             const decoded = decodeBase64(encoded);
             resultado.textContent = decoded;
-
-            document.getElementById("copiarBtn").addEventListener("click", () => {
-                navigator.clipboard.writeText(decoded).then(() => {
-                    alert("Texto copiado al portapapeles");
-                }).catch(err => {
-                    alert("Error al copiar: " + err);
-                });
-            });
+            await copiarAlPortapapeles(decoded);
         } catch (e) {
             errorDiv.textContent = e.message;
         }
