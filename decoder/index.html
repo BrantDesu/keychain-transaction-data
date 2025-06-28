@@ -37,11 +37,27 @@
             white-space: pre-wrap;
             word-break: break-word;
             font-size: 0.95em;
+            margin-bottom: 10px;
         }
 
         .error {
             color: red;
             margin-top: 20px;
+        }
+
+        .copy-btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+        }
+
+        .copy-btn:active {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -51,6 +67,7 @@
     <h2>Decodificador de Texto</h2>
 
     <div id="resultado" class="decoded-text"></div>
+    <button id="copyButton" class="copy-btn" style="display:none;">Copiar al portapapeles</button>
     <div id="error" class="error"></div>
 </div>
 
@@ -71,16 +88,17 @@
     async function copiarAlPortapapeles(texto) {
         try {
             await navigator.clipboard.writeText(texto);
-            console.log("Texto decodificado copiado automáticamente");
+            alert("Texto copiado al portapapeles.");
         } catch (err) {
             console.error("Error al copiar: ", err);
         }
     }
 
-    document.addEventListener("DOMContentLoaded", async () => {
+    document.addEventListener("DOMContentLoaded", () => {
         const encoded = obtenerParametro("data");
         const resultado = document.getElementById("resultado");
         const errorDiv = document.getElementById("error");
+        const copyButton = document.getElementById("copyButton");
 
         if (!encoded) {
             errorDiv.textContent = "No se encontró el parámetro 'data' en la URL.";
@@ -90,7 +108,8 @@
         try {
             const decoded = decodeBase64(encoded);
             resultado.textContent = decoded;
-            await copiarAlPortapapeles(decoded);
+            copyButton.style.display = "inline-block";
+            copyButton.addEventListener("click", () => copiarAlPortapapeles(decoded));
         } catch (e) {
             errorDiv.textContent = e.message;
         }
